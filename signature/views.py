@@ -1,12 +1,11 @@
 # Create your views here.
 
-from django.http import HttpResponse,HttpResponseRedirect
-from django.core.urlresolvers import reverse
-from django.core import serializers
+from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from signature.models import *
-from django.template import RequestContext
-import sha
+import hashlib
+import time
+import xml.etree.ElementTree as ET
 
 TOKEN = "ApesRise"
 
@@ -14,26 +13,67 @@ def check_signature(request):
 	signature = request.REQUEST.get("signature",None)
 	timestamp = request.REQUEST.get("timestamp",None)
 	nonce = request.REQUEST.get("nonce",None)
-	echostr = request.GET.get("echostr",None)
+	echostr = request.REQUEST.get("echostr",None)
 	if signature and timestamp and nonce:
 		tmp_arr = list((TOKEN,timestamp,nonce))
 		tmp_arr = sorted(tmp_arr)
 		tmp_str = ""
 		for item in tmp_arr:
 			tmp_str += item
-		tmp_str =sha.new(tmp_str).hexdigest()
+		tmp_str =hashlib.new(tmp_str).hexdigest()
 		if tmp_str == signature:
 			#return HttpResponse(echostr)   #connect
-			return HttpResponseRedirect(reverse('signature.views.reply_message'))
+			return reply_message(request)
 		else:
-			return HttpResponse("False")
+			return HttpResponse("invalid request")
 	else:
-		return reply_message(request) #Test
-		#return HttpResponse("False")
-
-	
+		#return reply_message(request)
+		return HttpResponse("invalid request")
 
 def reply_message(request):
-	message = Message.objects.all()
-	return render_to_response('reply_message.html',locals(),context_instance=RequestContext(request))
-	#,mimetype="application/xml"
+	try:
+		doc = ET.parse(request)
+		message = Message.objects.order_by('-id')[0]
+	except Exception, e:
+		return HttpResponse(e)
+	create_timestamp = int(time.time())
+	to_user_name = doc.find('ToUserName')
+	from_user_name = doc.find('FromUserName')
+	if to_user_name and from_user_name:
+		return render_to_response('reply_message.html',locals(),content_type="application/xml")
+	else:
+		return HttpResponse("xml parse error")
+
+def reply_message_test(request):
+	try:
+		message = Message.objects.order_by('-id')[0]
+	except Exception, e:
+		return HttpResponse(e)
+	create_timestamp = int(time.time())
+	return render_to_response('reply_message.html',locals(),content_type="application/xml")
+
+def reply_news(request):
+	try:
+		doc = ET.parse(request)
+		message = Message.objects.order_by('-id')[0]
+	except Exception, e:
+		return HttpResponse(e)
+	create_timestamp = int(time.time())
+	to_user_name = doc.find('ToUserName')
+	from_user_name = doc.find('FromUserName')
+	if to_user_name and from_user_name:
+		articles = Article.objects.filter(news=message)
+		count = articles.count()
+		return render_to_response('reply_news.html',locals(),content_type="application/xml")
+	else:
+		return HttpResponse("xml parse error")
+
+def reply_news_test(request):
+	try:
+		message = Message.objects.order_by('-id')[0]
+	except Exception, e:
+		return HttpResponse(e)
+	create_timestamp = int(time.time())
+	articles = Article.objects.filter(news=message)
+	count = articles.count()
+	return render_to_response('reply_news.html',locals(),content_type="application/xml")

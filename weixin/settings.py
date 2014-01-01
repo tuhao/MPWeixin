@@ -1,8 +1,9 @@
 # Django settings for weixin project.
 import os.path
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+DEBUG = False
+TEMPLATE_DEBUG = None
+
 
 ADMINS = (
      ('Yasir', 'astro.liuhang@gmail.com'),
