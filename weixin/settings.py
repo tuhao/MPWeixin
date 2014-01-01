@@ -52,9 +52,9 @@ USE_TZ = True
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
 if DEBUG:
-    MEDIA_ROOT = '/home/yasir/Django/MPWeixin/signature/media/'
+    MEDIA_ROOT = '/home/yasir/Django/MPWeixin/weixin/media/'
 else:
-    MEDIA_ROOT = '/srv/uwsgi/MPWeixin/signature/media/'
+    MEDIA_ROOT = '/srv/uwsgi/MPWeixin/weixin/media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -77,11 +77,11 @@ if DEBUG:
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-        '/home/yasir/Django/MPWeixin/signature/static',
+        '/home/yasir/Django/MPWeixin/weixin/static',
     )
 else:
     STATICFILES_DIRS = (
-        '/srv/uwsgi/MPWeixin/signature/static',
+        '/srv/uwsgi/MPWeixin/weixin/static',
     )
 
 
