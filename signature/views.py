@@ -43,13 +43,15 @@ def reply_message(request):
 	from_user_name = doc.find('FromUserName')
      	create_timestamp = doc.find('CreateTime')
 	if to_user_name is not None and from_user_name is not None:
+		type_name = str(message.msg_type.name)
+		content = str(message.content)
 		result = """
 	<xml version="1.0" encoding="utf-8">
 	<ToUserName>""" + to_user_name + """</ToUserName>
 	<FromUserName>""" + from_user_name + """</FromUserName>
 	<CreateTime>""" + create_timestamp + """</CreateTime>
-	<MsgType>""" + message.msg_type.name + """</MsgType>
-	<Content>""" + message.content + """</Content>
+	<MsgType>""" + type_name + """</MsgType>
+	<Content>""" + content + """</Content>
 	</xml>
 	"""
 		return HttpResponse(result,mimetype="application/xml")
