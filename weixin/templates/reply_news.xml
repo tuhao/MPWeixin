@@ -1,6 +1,6 @@
 <xml version="1.0" encoding="utf-8">
-<ToUserName>{{to_user_name}}</ToUserName>
-<FromUserName>{{from_user_name}}</FromUserName>
+<ToUserName>{{to_user_name.text}}</ToUserName>
+<FromUserName>{{from_user_name.text}}</FromUserName>
 <CreateTime>{{create_timestamp}}</CreateTime>
 <MsgType>{{message.msg_type.name}}</MsgType>
 <ArticleCount>{{count}}</ArticleCount>

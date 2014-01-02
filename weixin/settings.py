@@ -1,7 +1,7 @@
 # Django settings for weixin project.
 import os.path
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = None
 
 
@@ -52,10 +52,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-if DEBUG:
-    MEDIA_ROOT = '/home/yasir/Django/MPWeixin/weixin/media/'
-else:
-    MEDIA_ROOT = '/srv/uwsgi/MPWeixin/weixin/media/'
+MEDIA_ROOT = '/srv/uwsgi/MPWeixin/weixin/media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -73,17 +70,9 @@ STATIC_ROOT = ''
 STATIC_URL = '/static/'
 
 # Additional locations of static files
-if DEBUG:
-    STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-        '/home/yasir/Django/MPWeixin/weixin/static',
-    )
-else:
-    STATICFILES_DIRS = (
-        '/srv/uwsgi/MPWeixin/weixin/static',
-    )
+STATICFILES_DIRS = (
+    '/srv/uwsgi/MPWeixin/weixin/static',
+)
 
 
 

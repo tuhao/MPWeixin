@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from signature.models import *
 from django.views.decorators.csrf import csrf_exempt
-import hashlib
+import sha
 import time
 import xml.etree.ElementTree as ET
 
@@ -22,15 +22,15 @@ def check_signature(request):
 		tmp_str = ""
 		for item in tmp_arr:
 			tmp_str += item
-		tmp_str =hashlib.new(tmp_str).hexdigest()
+		tmp_str =sha.new(tmp_str).hexdigest()
 		if tmp_str == signature:
 			#return HttpResponse(echostr)   #connect
 			return reply_message(request)
 		else:
-			return HttpResponse("invalid request")
+			return HttpResponse("signature not correct")
 	else:
 		#return reply_message(request)
-		return HttpResponse("invalid request")
+		return HttpResponse('invalid request')
 
 @csrf_exempt
 def reply_message(request):
@@ -39,13 +39,13 @@ def reply_message(request):
 		message = Message.objects.order_by('-id')[0]
 	except Exception, e:
 		return HttpResponse(e)
-	create_timestamp = int(time.time())
 	to_user_name = doc.find('ToUserName')
 	from_user_name = doc.find('FromUserName')
-	if to_user_name and from_user_name:
-		return render_to_response('reply_message.html',locals(),content_type="application/xml")
+        create_timestamp = doc.find('CreateTime')
+	if to_user_name is not None and from_user_name is not None:
+		return render_to_response('reply_message.xml',locals(),mimetype="application/xml")
 	else:
-		return HttpResponse("xml parse error")
+		return HttpResponse('invalid xml')
 
 
 @csrf_exempt
@@ -58,10 +58,10 @@ def reply_news(request):
 	create_timestamp = int(time.time())
 	to_user_name = doc.find('ToUserName')
 	from_user_name = doc.find('FromUserName')
-	if to_user_name and from_user_name:
+	if to_user_name is not None and from_user_name is not None:
 		articles = Article.objects.filter(news=message)
 		count = articles.count()
-		return render_to_response('reply_news.html',locals(),content_type="application/xml")
+		return render_to_response('reply_news.xml',locals(),content_type="application/xml")
 	else:
 		return HttpResponse("xml parse error")
 
@@ -72,7 +72,7 @@ def reply_message_test(request):
 	except Exception, e:
 		return HttpResponse(e)
 	create_timestamp = int(time.time())
-	return render_to_response('reply_message.html',locals(),content_type="application/xml")
+	return render_to_response('reply_message.xml',locals(),content_type="application/xml")
 
 def reply_news_test(request):
 	try:
