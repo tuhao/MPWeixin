@@ -1,20 +1,20 @@
 <xml version="1.0" encoding="utf-8">
-<ToUserName>{{to_user_name.text}}</ToUserName>
-<FromUserName>{{from_user_name.text}}</FromUserName>
-<CreateTime>{{create_timestamp}}</CreateTime>
-<MsgType>{{message.msg_type.name}}</MsgType>
-<ArticleCount>{{count}}</ArticleCount>
+<ToUserName><![CDATA[{{from_user_name.text}}]]></ToUserName>
+<FromUserName><![CDATA[{{to_user_name.text}}]]></FromUserName>
+<CreateTime><![CDATA[{{create_timestamp}}]]></CreateTime>
+<MsgType><![CDATA[{{message.msg_type.name}}]]></MsgType>
+<ArticleCount><![CDATA[{{count}}]]></ArticleCount>
 <Articles>
 {% for item in articles %}
 <item>
-<Title>{{item.title}}</Title> 
-<Description>{{item.description}}</Description>
+<Title><![CDATA[{{item.title}}]]></Title> 
+<Description><![CDATA[{{item.description}}]]></Description>
 {% if forloop.first %}
-<PicUrl>http://{{request.META.HTTP_HOST}}{{item.pic_thumbnail_album.url}}</PicUrl>
+<PicUrl><![CDATA[http://{{request.META.HTTP_HOST}}{{item.pic_thumbnail_album.url}}]]></PicUrl>
 {% else %}
-<PicUrl>http://{{request.META.HTTP_HOST}}{{item.pic_thumbnail.url}}</PicUrl>
+<PicUrl><![CDATA[http://{{request.META.HTTP_HOST}}{{item.pic_thumbnail.url}}]]></PicUrl>
 {% endif%}
-<Url>{{item.url}}</Url>
+<Url><![CDATA[{{item.url}}]]></Url>
 </item>
 {% endfor %}
 </Articles>

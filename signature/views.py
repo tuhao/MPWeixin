@@ -25,7 +25,7 @@ def check_signature(request):
 		tmp_str =sha.new(tmp_str).hexdigest()
 		if tmp_str == signature:
 			#return HttpResponse(echostr)   #connect
-			return reply_message(request)
+			return reply_news(request)
 		else:
 			return HttpResponse("signature not correct")
 	else:
@@ -36,7 +36,6 @@ def check_signature(request):
 def reply_message(request):
 	try:
 		doc = ET.parse(request)
-		doc.write('request.xml')
 		message = Message.objects.order_by('-id')[0]
 	except Exception, e:
 		return HttpResponse(e)
