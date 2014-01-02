@@ -2,6 +2,6 @@
 <ToUserName><![CDATA[{{from_user_name.text}}]]></ToUserName>
 <FromUserName><![CDATA[{{to_user_name.text}}]]></FromUserName>
 <CreateTime>{{create_timestamp}}</CreateTime>
-<MsgType><![CDATA[{{message.msg_type.name}}]]></MsgType>
+<MsgType><![CDATA[text]]></MsgType>
 <Content><![CDATA[{{message.content}}]]></Content>
 </xml>

@@ -25,7 +25,7 @@ def check_signature(request):
 		tmp_str =sha.new(tmp_str).hexdigest()
 		if tmp_str == signature:
 			#return HttpResponse(echostr)   #connect
-			return reply_news(request)
+			return reply_message(request)
 		else:
 			return HttpResponse("signature not correct")
 	else:

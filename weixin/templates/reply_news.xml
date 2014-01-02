@@ -1,8 +1,8 @@
-<xml version="1.0" encoding="utf-8">
+<xml>
 <ToUserName><![CDATA[{{from_user_name.text}}]]></ToUserName>
 <FromUserName><![CDATA[{{to_user_name.text}}]]></FromUserName>
 <CreateTime><![CDATA[{{create_timestamp}}]]></CreateTime>
-<MsgType><![CDATA[{{message.msg_type.name}}]]></MsgType>
+<MsgType><![CDATA[news]]></MsgType>
 <ArticleCount><![CDATA[{{count}}]]></ArticleCount>
 <Articles>
 {% for item in articles %}
