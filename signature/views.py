@@ -82,4 +82,4 @@ def reply_news_test(request):
 	create_timestamp = int(time.time())
 	articles = Article.objects.filter(news=message)
 	count = articles.count()
-	return render_to_response('reply_news.html',locals(),content_type="application/xml")
+	return render_to_response('reply_news.xml',locals(),content_type="application/xml")
