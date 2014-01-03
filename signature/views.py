@@ -56,6 +56,7 @@ SWITCH = {
 	#'ss':,
 }
 
+
 @csrf_exempt
 def reply(request):
 	xml_doc = parse_xml(request)
@@ -65,9 +66,15 @@ def reply(request):
 		if func is not None:
 			return func(request,param)
 		else:
-			return reply_help(request,param)
+			return reply_guide(request,param)
 	else:
 		return HttpResponse(xml_doc[1])
+
+def reply_guide(request,param):
+	content = """ 输入"帮助"或者"help",看看我都会些啥～"""
+	from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
+	create_timestamp = int(time.time())
+	return render_to_response('reply_message.xml',locals(),content_type='application/xml')
 
 @csrf_exempt
 def reply_help(request,param):
