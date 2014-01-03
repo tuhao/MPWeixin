@@ -48,7 +48,9 @@ def parse_xml(request):
 			return None,'invalid query,content field not found'
 
 SWITCH = {
+	u'帮助'.encode('utf-8'):lambda x,param:reply_help(x,param),
 	'help':lambda x,param:reply_help(x,param),
+	u'最新'.encode('utf-8'):lambda x,param:reply_news(x,param),
 	'zx':lambda x,param:reply_news(x,param),
 	
 	#'ss':,
@@ -63,18 +65,9 @@ def reply(request):
 		if func is not None:
 			return func(request,param)
 		else:
-			return reply_notice(request,param)
+			return reply_help(request,param)
 	else:
-		return HttpResponse(xml_doc)
-
-CONTENT = u'输入"帮助"或者"help"，看我都会些什么'.encode('utf-8')
-
-@csrf_exempt
-def reply_notice(request,param):
-	content = CONTENT
-	from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
-	create_timestamp = int(time.time())
-	return render_to_response('reply_message.xml',locals(),content_type='application/xml')
+		return HttpResponse(xml_doc[1])
 
 @csrf_exempt
 def reply_help(request,param):
