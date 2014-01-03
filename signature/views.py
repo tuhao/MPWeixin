@@ -34,19 +34,18 @@ def check_signature(request):
 
 @csrf_exempt
 def parse_xml(request):
-	param = dict()
 	try:
 		doc = ET.parse(request)
 	except Exception, e:
-		return param,e
+		return None,e
 	else:
 		to_user_name = doc.find('ToUserName')
 		from_user_name = doc.find('FromUserName')
 		query_str = doc.find('Content')
 		if query_str is not None and to_user_name is not None and from_user_name is not None:
-			return dict(to_user_name=to_user_name.text,from_user_name=from_user_name.text,query_str=query_str.text)
+			return dict(to_user_name=to_user_name.text,from_user_name=from_user_name.text,query_str=query_str.text),None
 		else:
-			return param,'invalid query,content field not found'
+			return None,'invalid query,content field not found'
 
 SWITCH = {
 	'help':lambda x,param:reply_help(x,param),
@@ -68,9 +67,11 @@ def reply(request):
 	else:
 		return HttpResponse(xml_doc[1])
 
+CONTENT = u'输入"帮助"或者"help"，看我都会些什么'.encode('utf-8')
+
 @csrf_exempt
 def reply_notice(request,param):
-	content = u'输入"帮助"或者"help"，看我都会些什么'.encode('utf-8')
+	content = CONTENT
 	from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
 	create_timestamp = int(time.time())
 	return render_to_response('reply_message.xml',locals(),content_type='application/xml')
