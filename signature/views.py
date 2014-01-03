@@ -71,7 +71,7 @@ def reply(request):
 		return HttpResponse(xml_doc[1])
 
 def reply_guide(request,param):
-	content = """ 输入"帮助"或者"help",看看我都会些啥～"""
+	content = """ 输入 帮助 或者 help  看看我都会些啥～"""
 	from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
 	create_timestamp = int(time.time())
 	return render_to_response('reply_message.xml',locals(),content_type='application/xml')
