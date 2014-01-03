@@ -48,7 +48,9 @@ def parse_xml(request):
 			return None,'invalid query,content field not found'
 
 SWITCH = {
+        '帮助':lambda x,param:reply_help(x,param),
 	'help':lambda x,param:reply_help(x,param),
+        '最新':lambda x,param:reply_news(x,param),
 	'zx':lambda x,param:reply_news(x,param),
 	
 	#'ss':,
@@ -59,7 +61,7 @@ def reply(request):
 	xml_doc = parse_xml(request)
 	if xml_doc[1] is None:
 		param = xml_doc[0]
-		func = SWITCH.get(param['query_str'],None)
+		func = SWITCH.get(param['query_str'].encode('utf-8'),None)
 		if func is not None:
 			return func(request,param)
 		else:
