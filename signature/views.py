@@ -57,7 +57,7 @@ SWITCH = {
 @csrf_exempt
 def reply(request):
 	xml_doc = parse_xml(request)
-	if xml_doc[1] is not None:
+	if xml_doc[1] is None:
 		param = xml_doc[0]
 		func = SWITCH.get(param['query_str'],None)
 		if func is not None:
@@ -65,7 +65,7 @@ def reply(request):
 		else:
 			return reply_notice(request,param)
 	else:
-		return HttpResponse(xml_doc[1])
+		return HttpResponse(xml_doc)
 
 CONTENT = u'输入"帮助"或者"help"，看我都会些什么'.encode('utf-8')
 
