@@ -48,9 +48,7 @@ def parse_xml(request):
 			return None,'invalid query,content field not found'
 
 SWITCH = {
-	u'帮助'.encode('utf-8'):lambda x,param:reply_help(x,param),
 	'help':lambda x,param:reply_help(x,param),
-	u'最新'.encode('utf-8'):lambda x,param:reply_news(x,param),
 	'zx':lambda x,param:reply_news(x,param),
 	
 	#'ss':,
@@ -89,7 +87,7 @@ def reply_news(request,param):
 	except Exception, e:
 		return HttpResponse(e)
 	else:
-		from_user_name,to_user_name,create_timestamp = param['to_user_name'],param['from_user_name']
+		from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
 		create_timestamp = int(time.time())
 		count = articles.count()
 	return render_to_response('reply_news.xml',locals(),content_type='application/xml')
@@ -105,10 +103,10 @@ def reply_message_test(request):
 
 def reply_news_test(request):
 	try:
-		message = Message.objects.order_by('-id')[0]
+		news = News.objects.order_by('-id')[0]
 	except Exception, e:
 		return HttpResponse(e)
 	create_timestamp = int(time.time())
-	articles = Article.objects.filter(news=message)
+	articles = Article.objects.filter(news=news)
 	count = articles.count()
 	return render_to_response('reply_news.xml',locals(),content_type='application/xml')
