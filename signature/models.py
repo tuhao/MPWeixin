@@ -4,26 +4,31 @@ from imagekit.processors import ResizeToFill
 
 # Create your models here.
 
-class MsgType(models.Model):
-	name = models.CharField(max_length=20)
-	def __unicode__(self):
-		return self.name
-
 class Message(models.Model):
 	title = models.CharField(max_length=100)
-	msg_type = models.ForeignKey(MsgType)
-	to_user_name = models.CharField(max_length=100)
-	from_user_name = models.CharField(max_length=100)
 	create_time = models.DateTimeField(auto_now_add=True)
-	content = models.TextField(u'message',max_length=5000,blank=False)
+	content = models.TextField(u'message',max_length=2000,blank=False)
 	def __unicode__(self):
 		return self.title
 
+class Help(models.Model):
+	title = models.CharField(max_length=50)
+	content = models.TextField(u'help',max_length=1000,blank=False)
+
+	def __unicode__(self):
+		return self.title
+
+class News(models.Model):
+	title = models.CharField(max_length=100)
+	create_time = models.DateTimeField(auto_now_add=True)
+
+	def __unicode__(self):
+		return self.title
 
 class Article(models.Model):
-	news = models.ForeignKey(Message)
+	news = models.ForeignKey(News)
 	title = models.CharField(max_length = 100)
-	description = models.CharField(max_length=255)
+	description = models.CharField(max_length=255,blank=True)
 	pic = models.ImageField(upload_to='upload/article_pic')
 	pic_thumbnail_album = ImageSpecField(
 		source='pic',

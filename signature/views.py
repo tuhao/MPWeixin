@@ -1,3 +1,4 @@
+#coding=utf-8
 # Create your views here.
 
 from django.http import HttpResponse
@@ -8,62 +9,96 @@ import sha
 import time
 import xml.etree.ElementTree as ET
 
-TOKEN = "ApesRise"
+TOKEN = 'ApesRise'
 
 @csrf_exempt
 def check_signature(request):
-	signature = request.REQUEST.get("signature",None)
-	timestamp = request.REQUEST.get("timestamp",None)
-	nonce = request.REQUEST.get("nonce",None)
-	echostr = request.REQUEST.get("echostr",None)
+	signature = request.REQUEST.get('signature',None)
+	timestamp = request.REQUEST.get('timestamp',None)
+	nonce = request.REQUEST.get('nonce',None)
+	#echostr = request.REQUEST.get('echostr',None)    #connect
 	if signature and timestamp and nonce:
 		tmp_arr = list((TOKEN,timestamp,nonce))
 		tmp_arr = sorted(tmp_arr)
-		tmp_str = ""
+		tmp_str = ''
 		for item in tmp_arr:
 			tmp_str += item
 		tmp_str =sha.new(tmp_str).hexdigest()
 		if tmp_str == signature:
 			#return HttpResponse(echostr)   #connect
-			return reply_message(request)
+			return reply(request)
 		else:
-			return HttpResponse("signature not correct")
+			return HttpResponse('signature not correct')
 	else:
-		#return reply_message(request)
 		return HttpResponse('invalid request')
 
 @csrf_exempt
-def reply_message(request):
+def parse_xml(request):
+	param = dict()
 	try:
 		doc = ET.parse(request)
-		message = Message.objects.order_by('-id')[0]
 	except Exception, e:
-		return HttpResponse(e)
-	to_user_name = doc.find('ToUserName')
-	from_user_name = doc.find('FromUserName')
-     	create_timestamp = int(time.time())
-	if to_user_name is not None and from_user_name is not None:
-		return render_to_response('reply_message.xml',locals(),content_type="application/xml")
+		return param,e
 	else:
-		return HttpResponse('invalid xml')
+		to_user_name = doc.find('ToUserName')
+		from_user_name = doc.find('FromUserName')
+		query_str = doc.find('Content')
+		if query_str is not None and to_user_name is not None and from_user_name is not None:
+			return dict(to_user_name=to_user_name.text,from_user_name=from_user_name.text,query_str=query_str.text)
+		else:
+			return param,'invalid query,content field not found'
 
+SWITCH = {
+	'help':lambda x,param:reply_help(x,param),
+	'zx':lambda x,param:reply_news(x,param),
+	
+	#'ss':,
+}
 
 @csrf_exempt
-def reply_news(request):
+def reply(request):
+	xml_doc = parse_xml(request)
+	if xml_doc[1] is not None:
+		param = xml_doc[0]
+		func = SWITCH.get(param['query_str'],None)
+		if func is not None:
+			return func(request,param)
+		else:
+			return reply_notice(request,param)
+	else:
+		return HttpResponse(xml_doc[1])
+
+@csrf_exempt
+def reply_notice(request,param):
+	content = u'输入"帮助"或者"help"，看我都会些什么'.encode('utf-8')
+	from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
+	create_timestamp = int(time.time())
+	return render_to_response('reply_message.xml',locals(),content_type='application/xml')
+
+@csrf_exempt
+def reply_help(request,param):
 	try:
-		doc = ET.parse(request)
-		message = Message.objects.order_by('-id')[0]
+		message = Help.objects.order_by('-id')[0]
+	except Exception, e:
+		return HttpResponse('no help message found')
+	else:
+		content = message.content
+		from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
+		create_timestamp = int(time.time())
+		return render_to_response('reply_message.xml',locals(),content_type='application/xml')
+
+@csrf_exempt
+def reply_news(request,param):
+	try:
+		news = News.objects.order_by('-id')[0]
+		articles = Article.objects.filter(news=news)
 	except Exception, e:
 		return HttpResponse(e)
-	create_timestamp = int(time.time())
-	to_user_name = doc.find('ToUserName')
-	from_user_name = doc.find('FromUserName')
-	if to_user_name is not None and from_user_name is not None:
-		articles = Article.objects.filter(news=message)
-		count = articles.count()
-		return render_to_response('reply_news.xml',locals(),content_type="application/xml")
 	else:
-		return HttpResponse("xml parse error")
+		from_user_name,to_user_name,create_timestamp = param['to_user_name'],param['from_user_name']
+		create_timestamp = int(time.time())
+		count = articles.count()
+	return render_to_response('reply_news.xml',locals(),content_type='application/xml')
 
 
 def reply_message_test(request):
@@ -72,7 +107,7 @@ def reply_message_test(request):
 	except Exception, e:
 		return HttpResponse(e)
 	create_timestamp = int(time.time())
-	return render_to_response('reply_message.xml',locals(),content_type="application/xml")
+	return render_to_response('reply_message.xml',locals(),content_type='application/xml')
 
 def reply_news_test(request):
 	try:
@@ -82,4 +117,4 @@ def reply_news_test(request):
 	create_timestamp = int(time.time())
 	articles = Article.objects.filter(news=message)
 	count = articles.count()
-	return render_to_response('reply_news.xml',locals(),content_type="application/xml")
+	return render_to_response('reply_news.xml',locals(),content_type='application/xml')

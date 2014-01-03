@@ -1,6 +1,6 @@
 <xml>
-<ToUserName><![CDATA[{{from_user_name.text}}]]></ToUserName>
-<FromUserName><![CDATA[{{to_user_name.text}}]]></FromUserName>
+<ToUserName><![CDATA[{{from_user_name}}]]></ToUserName>
+<FromUserName><![CDATA[{{to_user_name}}]]></FromUserName>
 <CreateTime><![CDATA[{{create_timestamp}}]]></CreateTime>
 <MsgType><![CDATA[news]]></MsgType>
 <ArticleCount><![CDATA[{{count}}]]></ArticleCount>
