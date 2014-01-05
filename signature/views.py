@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 import sha
 import time
 import xml.etree.ElementTree as ET
+import re
 
 TOKEN = 'ApesRise'
 
@@ -52,21 +53,24 @@ SWITCH = {
 	'help':lambda x,param:reply_help(x,param),
         '最新':lambda x,param:reply_news(x,param),
 	'zx':lambda x,param:reply_news(x,param),
-	
 	#'ss':,
 }
 
-
+NUMBERIC = re.compile(r'\d')
 @csrf_exempt
 def reply(request):
 	xml_doc = parse_xml(request)
 	if xml_doc[1] is None:
 		param = xml_doc[0]
-		func = SWITCH.get(param['query_str'].encode('utf-8'),None)
+		query_str = param['query_str'].encode('utf-8')
+		func = SWITCH.get(query_str,None)
 		if func is not None:
 			return func(request,param)
 		else:
-			return reply_guide(request,param)
+			if NUMBERIC.match(query_str):
+				return reply_message(request,param,int(query_str))
+			else:
+				return reply_guide(request,param)
 	else:
 		return HttpResponse(xml_doc[1])
 
@@ -75,6 +79,17 @@ def reply_guide(request,param):
 	from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
 	create_timestamp = int(time.time())
 	return render_to_response('reply_message.xml',locals(),content_type='application/xml')
+
+def reply_message(request,param,index):
+	try:
+		message = Help.objects.order_by('-id')[index]
+	except Exception, e:
+		return HttpResponse(e)
+	else:
+		from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
+		create_timestamp = int(time.time())
+		return render_to_response('reply_message.xml',locals(),content_type='application/xml')
+	
 
 @csrf_exempt
 def reply_help(request,param):
