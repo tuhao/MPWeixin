@@ -81,13 +81,15 @@ def reply_guide(request,param):
 	return render_to_response('reply_message.xml',locals(),content_type='application/xml')
 
 def reply_message(request,param,index):
+        print index
 	try:
-		message = Help.objects.order_by('-id')[index]
+		message = Message.objects.order_by('-id')[index]
 	except Exception, e:
 		return HttpResponse(e)
 	else:
 		from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
 		create_timestamp = int(time.time())
+                content = message.content
 		return render_to_response('reply_message.xml',locals(),content_type='application/xml')
 	
 
