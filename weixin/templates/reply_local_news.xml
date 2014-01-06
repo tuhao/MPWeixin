@@ -9,7 +9,11 @@
 <item>
 <Title><![CDATA[{{item.title}}]]></Title> 
 <Description><![CDATA[{{item.description}}]]></Description>
-<PicUrl><![CDATA[{{item.pic.url}}]]></PicUrl>
+{% if forloop.first %}
+<PicUrl><![CDATA[http://{{request.META.HTTP_HOST}}{{item.pic_thumbnail_album.url}}]]></PicUrl>
+{% else %}
+<PicUrl><![CDATA[http://{{request.META.HTTP_HOST}}{{item.pic_thumbnail.url}}]]></PicUrl>
+{% endif%}
 <Url><![CDATA[{{item.url}}]]></Url>
 </item>
 {% endfor %}
