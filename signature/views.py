@@ -9,6 +9,9 @@ import sha
 import time
 import xml.etree.ElementTree as ET
 import re
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 TOKEN = 'ApesRise'
 GUIDE_WORDS = """ 输入 帮助 或者 help  看看我都会些啥～"""
@@ -82,7 +85,7 @@ TYPE_SWITCH = {
 	'event':EVENT_SWITCH,
 }
 
-NUMBERIC = re.compile(r'^[1-9][0-9]$')
+NUMBERIC = re.compile(r'^[1-9][0-9]?$')
 
 def reply(request):
 	xml = parse_xml(request)
@@ -110,7 +113,7 @@ def reply(request):
 		return HttpResponse(xml[1])
 
 def reply_welcom(request,param):
-	param.update(welcome=WELCOME)
+	param.update(welcome=True)
 	return reply_help(request, param)
 
 def reply_leave_message(request,param,words):
@@ -138,9 +141,9 @@ def reply_help(request,param):
 		return HttpResponse('no help message found')
 	else:
 		content = message.content
-		welcom = param.get('welcome',None) 
-		if welcom is not None:
-			content = welcom + content
+		welcome = param.get('welcome',None) 
+		if welcome is not None:
+			content = WELCOME + " " + content
 		from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
 		create_timestamp = int(time.time())
 		return render_to_response('reply_message.xml',locals(),content_type='application/xml')
