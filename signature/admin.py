@@ -6,7 +6,7 @@ admin.site.register(Help)
 admin.site.register(News)
 
 class MessageAdmin(admin.ModelAdmin):
-	list_display = ('id','title','content')
+	list_display = ('id','reason','title','content','create_time')
 
 admin.site.register(Message,MessageAdmin)
 

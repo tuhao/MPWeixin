@@ -7,6 +7,7 @@ from imagekit.processors import ResizeToFill
 class Message(models.Model):
 	title = models.CharField(max_length=100)
 	create_time = models.DateTimeField(auto_now_add=True)
+	reason = models.CharField(max_length=100,blank=True)
 	content = models.TextField(u'message',max_length=2000,blank=False)
 	def __unicode__(self):
 		return self.title

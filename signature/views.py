@@ -89,7 +89,7 @@ def reply_message(request,param,index):
 	else:
 		from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
 		create_timestamp = int(time.time())
-                content = message.content
+          	content = message.content
 		return render_to_response('reply_message.xml',locals(),content_type='application/xml')
 	
 
