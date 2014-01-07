@@ -92,9 +92,6 @@ def reply(request):
 				else:
 					if key[:2] == 'ss':
 						key = key[2:]
-                                        if key.startswith('搜索'):
-	key=key[4:]
-                                                print key
 						return reply_search(request, param, key)
 					else:
 						return reply_help(request,param)
