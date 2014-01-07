@@ -68,7 +68,7 @@ CONTENT_SWITCH = {
 }
 
 EVENT_SWITCH = {
-	'subscribe':lambda req,param:welcome(req,param),
+	'subscribe':lambda req,param:reply_welcome(req,param),
 }
 
 TYPE_SWITCH = {
@@ -76,6 +76,7 @@ TYPE_SWITCH = {
 	'event':EVENT_SWITCH,
 }
 
+@csrf_exempt
 def reply(request):
 	xml = parse_xml(request)
 	if xml[1] is None:
@@ -90,7 +91,7 @@ def reply(request):
 				if func is not None:
 					return func(request,param)
 				else:
-					return help(request,param)
+					return reply_help(request,param)
 			else:
 				return HttpResponse('unsupported type')
 		else:
@@ -98,25 +99,17 @@ def reply(request):
 	else:
 		return HttpResponse(xml[1])
 
-def welcome(request,param):
-	words = ''
+def reply_welcome(request,param):
+	words = ""
 	try:
-		words += Welcome.objects.order_by('-id')[0]
-		words += Help.objects.order_by('-id')[0]
+		welcome = Welcome.objects.order_by('-id')[0]
+		words += welcome.content
+		help = Help.objects.order_by('-id')[0]
+		words += help.content
 	except Exception, e:
-		return HttpResponse(e)
+		raise e
 	else:
 		return reply_leave_message(request,param,words)
-	
-
-def help(request,param):
-	words = ''
-	try:
-		words += Help.objects.order_by('-id')[0]
-	except Exception, e:
-		return HttpResponse(e)
-	else:
-		return reply_leave_message(request, param, words)
 
 def reply_leave_message(request,param,words):
 	content = words
@@ -124,16 +117,13 @@ def reply_leave_message(request,param,words):
 	create_timestamp = int(time.time())
 	return render_to_response('reply_message.xml',locals(),content_type='application/xml')
 
-def reply_message(request,param,index):
+def reply_help(request,param):
 	try:
-		message = Message.objects.order_by('-id')[index]
+		help = Help.objects.order_by('-id')[0]
 	except Exception, e:
 		return HttpResponse(e)
 	else:
-		from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
-		create_timestamp = int(time.time())
-          	content = message.content
-		return render_to_response('reply_message.xml',locals(),content_type='application/xml')
+		return reply_leave_message(request, param, help.content)
 
 def reply_news(request,param):
 	try:
@@ -161,7 +151,7 @@ def reply_gen_news(request,param):
 			continue
 		title = msg.title
 		description = msg.content[:15]
-		url = 'http://' + request.META.get('HTTP_HOST') + reverse('signature.views.news_detail',args=(msg.id,))
+		url = "http://" + request.META.get('HTTP_HOST') + reverse('signature.views.news_detail',args=(msg.id,))
 		article = Article(news_id=news_id,title=title,description=description,pic=pic,url=url)
 		articles.append(article)
 	from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
@@ -178,4 +168,5 @@ def news_detail(request,msg_id):
 		content = IMAGEURL.sub('',message.content)
      		for image in IMAGEURL.findall(content):
      			pic = image
+     			break
 		return render_to_response('message_detail.html',locals())
