@@ -149,7 +149,7 @@ def reply_gen_news(request,param):
 			break
 		if pic is None:
 			continue
-		title = msg.title
+		title = msg.content[:15]
 		description = msg.content[:15]
 		url = "http://" + request.META.get('HTTP_HOST') + reverse('signature.views.news_detail',args=(msg.id,))
 		article = Article(news_id=news_id,title=title,description=description,pic=pic,url=url)
@@ -165,8 +165,9 @@ def news_detail(request,msg_id):
 	except Exception, e:
 		return HttpResponse(e)
 	else:
-		content = IMAGEURL.sub('',message.content)
+		content = message.content
      		for image in IMAGEURL.findall(content):
      			pic = image
      			break
+     		content = IMAGEURL.sub('',content)
 		return render_to_response('message_detail.html',locals())
