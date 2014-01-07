@@ -60,8 +60,8 @@ def parse_xml(request):
 			return None,'missing msg_type'
 
 CONTENT_SWITCH = {
-        '帮助':lambda req,param:help(req,param),
-	'help':lambda req,param:help(req,param),
+        '帮助':lambda req,param:reply_help(req,param),
+	'help':lambda req,param:reply_help(req,param),
         '最新':lambda req,param:reply_gen_news(req,param),
 	'zx':lambda req,param:reply_gen_news(req,param),
 	#'ss':,
