@@ -6,7 +6,6 @@ from django.shortcuts import render_to_response
 from signature.models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.core.urlresolvers import reverse
-from django.shortcuts import get_object_or_404
 import sha
 import time
 import xml.etree.ElementTree as ET
@@ -16,15 +15,6 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 TOKEN = 'ApesRise'
-GUIDE_WORDS = """ 输入 帮助 或者 help  看看我都会些啥～"""
-WELCOME = """
-	欢迎关注晒美食 ^ ^
-	晒美食新浪微博：我爱晒美食
-	微信号：shaimeishi
-	"""
-BYE = """
-	欢迎再次关注，Bye！
-	"""
 
 @csrf_exempt
 def check_signature(request):
@@ -70,24 +60,21 @@ def parse_xml(request):
 			return None,'missing msg_type'
 
 CONTENT_SWITCH = {
-        '帮助':lambda req,param:reply_help(req,param),
-	'help':lambda req,param:reply_help(req,param),
+        '帮助':lambda req,param:help(req,param),
+	'help':lambda req,param:help(req,param),
         '最新':lambda req,param:reply_gen_news(req,param),
 	'zx':lambda req,param:reply_gen_news(req,param),
 	#'ss':,
 }
 
 EVENT_SWITCH = {
-	'subscribe':lambda req,param:reply_welcom(req,param),
-	'unsubscribe':lambda req,param:reply_leave_message(req,param,BYE),
+	'subscribe':lambda req,param:welcome(req,param),
 }
 
 TYPE_SWITCH = {
 	'text':CONTENT_SWITCH,
 	'event':EVENT_SWITCH,
 }
-
-NUMBERIC = re.compile(r'^[1-9][0-9]?$')
 
 def reply(request):
 	xml = parse_xml(request)
@@ -103,10 +90,7 @@ def reply(request):
 				if func is not None:
 					return func(request,param)
 				else:
-					if NUMBERIC.match(key):
-						return reply_message(request,param, int(key))
-					else:
-						return reply_leave_message(request,param,GUIDE_WORDS)
+					return help(request,param)
 			else:
 				return HttpResponse('unsupported type')
 		else:
@@ -114,9 +98,25 @@ def reply(request):
 	else:
 		return HttpResponse(xml[1])
 
-def reply_welcom(request,param):
-	param.update(welcome=True)
-	return reply_help(request, param)
+def welcome(request,param):
+	words = ''
+	try:
+		words += Welcome.objects.order_by('-id')[0]
+		words += Help.objects.order_by('-id')[0]
+	except Exception, e:
+		return HttpResponse(e)
+	else:
+		return reply_leave_message(request,param,words)
+	
+
+def help(request,param):
+	words = ''
+	try:
+		words += Help.objects.order_by('-id')[0]
+	except Exception, e:
+		return HttpResponse(e)
+	else:
+		return reply_leave_message(request, param, words)
 
 def reply_leave_message(request,param,words):
 	content = words
@@ -135,20 +135,6 @@ def reply_message(request,param,index):
           	content = message.content
 		return render_to_response('reply_message.xml',locals(),content_type='application/xml')
 
-def reply_help(request,param):
-	try:
-		message = Help.objects.order_by('-id')[0]
-	except Exception, e:
-		return HttpResponse('no help message found')
-	else:
-		content = message.content
-		welcome = param.get('welcome',None) 
-		if welcome is not None:
-			content = WELCOME + " " + content
-		from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
-		create_timestamp = int(time.time())
-		return render_to_response('reply_message.xml',locals(),content_type='application/xml')
-
 def reply_news(request,param):
 	try:
 		news = News.objects.order_by('-id')[0]
@@ -161,7 +147,6 @@ def reply_news(request,param):
 		count = len(articles)
 	return render_to_response('reply_news.xml',locals(),content_type='application/xml')
 
-HOST='http://weixin.yasir.cn'
 IMAGEURL = re.compile(r'http://.*?\.jpg')
 def reply_gen_news(request,param):
 	news_id = 1
@@ -172,9 +157,11 @@ def reply_gen_news(request,param):
 		for image_url in IMAGEURL.findall(msg.content):
 			pic = image_url
 			break
+		if pic is None:
+			continue
 		title = msg.title
 		description = msg.content[:15]
-		url = HOST + reverse('signature.views.news_detail',args=(msg.id,))
+		url = 'http://' + request.META.get('HTTP_HOST') + reverse('signature.views.news_detail',args=(msg.id,))
 		article = Article(news_id=news_id,title=title,description=description,pic=pic,url=url)
 		articles.append(article)
 	from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
@@ -184,12 +171,11 @@ def reply_gen_news(request,param):
 
 def news_detail(request,msg_id):
 	try:
-		message = get_object_or_404(Message,pk=msg_id)
+		message = Message.objects.get(id=msg_id)
 	except Exception, e:
 		return HttpResponse(e)
-        else:
-		content = message.content
-                for image in IMAGEURL.findall(content):
-                	pic = image
-                        break
+	else:
+		content = IMAGEURL.sub('',message.content)
+     		for image in IMAGEURL.findall(content):
+     			pic = image
 		return render_to_response('message_detail.html',locals())

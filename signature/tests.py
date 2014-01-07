@@ -5,6 +5,8 @@ if NUMBERIC.match('01'):
 	print 'match'
 
 IMAGEURL = re.compile(r'http://.*?\.jpg')
-
-for item in IMAGEURL.findall('asdsadhttp://www.sdadsa.jpgasds'):
+content = 'asdsadhttp://sdadsa.jpga sdsasasas'
+for item in IMAGEURL.findall(content):
 	print item
+print len(IMAGEURL.findall(content))
+print IMAGEURL.sub('', content)

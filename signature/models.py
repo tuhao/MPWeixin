@@ -19,6 +19,10 @@ class Help(models.Model):
 	def __unicode__(self):
 		return self.title
 
+class Welcome(models.Model):
+	title = models.CharField(max_length=50)
+	content = models.TextField(u'welcome',max_length=200,blank=False)
+
 class News(models.Model):
 	title = models.CharField(max_length=100)
 	create_time = models.DateTimeField(auto_now_add=True)
