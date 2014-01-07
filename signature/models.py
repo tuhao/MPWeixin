@@ -26,6 +26,13 @@ class News(models.Model):
 	def __unicode__(self):
 		return self.title
 
+class Welcome(models.Model):
+	title = models.CharField(max_length=50)
+	content = models.TextField(u'welcome',max_length=1000,blank=False)
+
+	def __unicode__(self):
+		return self.title
+
 class Article(models.Model):
 	news = models.ForeignKey(News)
 	title = models.CharField(max_length = 100)

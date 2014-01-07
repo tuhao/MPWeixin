@@ -16,15 +16,6 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 TOKEN = 'ApesRise'
-GUIDE_WORDS = """ 输入 帮助 或者 help  看看我都会些啥～"""
-WELCOME = """
-	欢迎关注晒美食 ^ ^
-	晒美食新浪微博：我爱晒美食
-	微信号：shaimeishi
-	"""
-BYE = """
-	欢迎再次关注，Bye！
-	"""
 
 @csrf_exempt
 def check_signature(request):
@@ -78,8 +69,7 @@ CONTENT_SWITCH = {
 }
 
 EVENT_SWITCH = {
-	'subscribe':lambda req,param:reply_welcom(req,param),
-	'unsubscribe':lambda req,param:reply_leave_message(req,param,BYE),
+	'subscribe':lambda req,param:reply_welcome(req,param),
 }
 
 TYPE_SWITCH = {
@@ -87,8 +77,7 @@ TYPE_SWITCH = {
 	'event':EVENT_SWITCH,
 }
 
-NUMBERIC = re.compile(r'^[1-9][0-9]?$')
-
+@csrf_exempt
 def reply(request):
 	xml = parse_xml(request)
 	if xml[1] is None:
@@ -103,10 +92,7 @@ def reply(request):
 				if func is not None:
 					return func(request,param)
 				else:
-					if NUMBERIC.match(key):
-						return reply_message(request,param, int(key))
-					else:
-						return reply_leave_message(request,param,GUIDE_WORDS)
+					return reply_help(request,param)
 			else:
 				return HttpResponse('unsupported type')
 		else:
@@ -114,9 +100,17 @@ def reply(request):
 	else:
 		return HttpResponse(xml[1])
 
-def reply_welcom(request,param):
-	param.update(welcome=True)
-	return reply_help(request, param)
+def reply_welcome(request,param):
+	words = ""
+	try:
+		welcome = Welcome.objects.order_by('-id')[0]
+		words += welcome.content
+		help = Help.objects.order_by('-id')[0]
+		words += help.content
+	except Exception, e:
+		raise e
+	else:
+		return reply_leave_message(request,param,words)
 
 def reply_leave_message(request,param,words):
 	content = words
@@ -124,30 +118,13 @@ def reply_leave_message(request,param,words):
 	create_timestamp = int(time.time())
 	return render_to_response('reply_message.xml',locals(),content_type='application/xml')
 
-def reply_message(request,param,index):
+def reply_help(request,param):
 	try:
-		message = Message.objects.order_by('-id')[index]
+		help = Help.objects.order_by('-id')[0]
 	except Exception, e:
 		return HttpResponse(e)
 	else:
-		from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
-		create_timestamp = int(time.time())
-          	content = message.content
-		return render_to_response('reply_message.xml',locals(),content_type='application/xml')
-
-def reply_help(request,param):
-	try:
-		message = Help.objects.order_by('-id')[0]
-	except Exception, e:
-		return HttpResponse('no help message found')
-	else:
-		content = message.content
-		welcome = param.get('welcome',None) 
-		if welcome is not None:
-			content = WELCOME + " " + content
-		from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
-		create_timestamp = int(time.time())
-		return render_to_response('reply_message.xml',locals(),content_type='application/xml')
+		return reply_leave_message(request, param, help.content)
 
 def reply_news(request,param):
 	try:
@@ -161,7 +138,7 @@ def reply_news(request,param):
 		count = len(articles)
 	return render_to_response('reply_news.xml',locals(),content_type='application/xml')
 
-HOST='http://weixin.yasir.cn'
+
 IMAGEURL = re.compile(r'http://.*?\.jpg')
 def reply_gen_news(request,param):
 	news_id = 1
@@ -172,9 +149,11 @@ def reply_gen_news(request,param):
 		for image_url in IMAGEURL.findall(msg.content):
 			pic = image_url
 			break
+		if pic is None:
+			continue
 		title = msg.title
 		description = msg.content[:15]
-		url = HOST + reverse('signature.views.news_detail',args=(msg.id,))
+		url = "http://" + request.META.get('HTTP_HOST') + reverse('signature.views.news_detail',args=(msg.id,))
 		article = Article(news_id=news_id,title=title,description=description,pic=pic,url=url)
 		articles.append(article)
 	from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
@@ -187,9 +166,9 @@ def news_detail(request,msg_id):
 		message = get_object_or_404(Message,pk=msg_id)
 	except Exception, e:
 		return HttpResponse(e)
-        else:
-		content = message.content
-                for image in IMAGEURL.findall(content):
-                	pic = image
-                        break
+	else:
+		content = IMAGEURL.sub('',message.content)
+     		for image in IMAGEURL.findall(content):
+     			pic = image
+     			break
 		return render_to_response('message_detail.html',locals())
