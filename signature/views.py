@@ -60,12 +60,13 @@ def parse_xml(request):
 			return None,'missing msg_type'
 
 CONTENT_SWITCH = {
-        '帮助':lambda req,param:reply_help(req,param),
-	'help':lambda req,param:reply_help(req,param),
-        '最新':lambda req,param:reply_gen_news(req,param),
-	'zx':lambda req,param:reply_gen_news(req,param),
-	#'ss':,
-}
+     '帮助':lambda req,param,_:reply_help(req,param),
+	'help':lambda req,param,_:reply_help(req,param),
+     '最新':lambda req,param,_:reply_recommend_message(req,param),
+	'zx':lambda req,param,_:reply_recommend_message(req,param),
+	'搜索':lambda req,param,query:reply_search(req,param,query=query),
+	'ss':lambda req,param,query:reply_search(req,param,query=query),
+	}
 
 EVENT_SWITCH = {
 	'subscribe':lambda req,param:reply_welcome(req,param),
@@ -89,7 +90,8 @@ def reply(request):
 			if switch is not None:
 				func = switch.get(key,None)
 				if func is not None:
-					return func(request,param)
+					query = key.replace(key,'')
+					return func(request,param,query)
 				else:
 					return reply_help(request,param)
 			else:
@@ -98,6 +100,19 @@ def reply(request):
 			return HttpResponse('unexpected type')
 	else:
 		return HttpResponse(xml[1])
+
+def reply_search(request,param,query):
+	if query is not None:
+		query = query.encode('utf-8')
+		try:
+			r = Message.search().query(query)
+			results = list(r)[:5]
+		except Exception, e:
+			return HttpResponse(e)
+		else:
+			return reply_gen_news(request, param, results)
+	else:
+		return HttpResponse('unknown query string')
 
 def reply_welcome(request,param):
 	words = ""
@@ -137,10 +152,14 @@ def reply_news(request,param):
 		count = len(articles)
 	return render_to_response('reply_news.xml',locals(),content_type='application/xml')
 
-IMAGEURL = re.compile(r'http://.*?\.jpg')
-def reply_gen_news(request,param):
-	news_id = 1
+def reply_recommend_message(request,param):
 	msgs = Message.objects.exclude(reason=None).order_by('-id')[:5]
+	return reply_gen_news(request, param, msgs)
+
+
+IMAGEURL = re.compile(r'http://.*?\.jpg')
+def reply_gen_news(request,param,msgs):
+	news_id = 1
 	articles = list()
 	for msg in msgs:
 		pic = None
