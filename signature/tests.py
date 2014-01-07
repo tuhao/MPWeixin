@@ -1,4 +1,8 @@
+#coding=utf-8
 import re
+import sys
+reload(sys)
+sys.setdefaultencode='utf-8'
 
 NUMBERIC = re.compile(r'^[1-9][0-9]$')
 if NUMBERIC.match('01'):

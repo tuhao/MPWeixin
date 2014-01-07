@@ -60,12 +60,10 @@ def parse_xml(request):
 			return None,'missing msg_type'
 
 CONTENT_SWITCH = {
-     '帮助':lambda req,param,_:reply_help(req,param),
-	'help':lambda req,param,_:reply_help(req,param),
-     '最新':lambda req,param,_:reply_recommend_message(req,param),
-	'zx':lambda req,param,_:reply_recommend_message(req,param),
-	'搜索':lambda req,param,query:reply_search(req,param,query=query),
-	'ss':lambda req,param,query:reply_search(req,param,query=query),
+     '帮助':lambda req,param:reply_help(req,param),
+	'help':lambda req,param:reply_help(req,param),
+     '最新':lambda req,param:reply_recommend_message(req,param),
+	'zx':lambda req,param:reply_recommend_message(req,param),
 	}
 
 EVENT_SWITCH = {
@@ -90,10 +88,14 @@ def reply(request):
 			if switch is not None:
 				func = switch.get(key,None)
 				if func is not None:
-					query = key.replace(key,'')
-					return func(request,param,query)
+					return func(request,param)
 				else:
-					return reply_help(request,param)
+					key = key.encode('utf-8')
+					if key[:2] == 'ss':
+						key = key[2:]
+						return reply_search(request, param, key)
+					else:
+						return reply_help(request,param)
 			else:
 				return HttpResponse('unsupported type')
 		else:
