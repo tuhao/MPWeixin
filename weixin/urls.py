@@ -18,8 +18,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^$',check_signature),
-    url(r'^testmsg/',reply_message_test),
-    url(r'^testnews/',reply_news_test),
+    url(r'^detail/(?P<msg_id>\d+)/$',news_detail),
 
     url(r'^static/(?P<path>.*)$','django.views.static.serve',{'document_root':os.path.dirname(globals()["__file__"])+'/static'}),
     url(r'^media/(?P<path>.*)$','django.views.static.serve',{'document_root':os.path.dirname(globals()["__file__"])+ '/media'}),

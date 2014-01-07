@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from signature.models import *
 from django.views.decorators.csrf import csrf_exempt
+from django.core.urlresolvers import reverse
 import sha
 import time
 import xml.etree.ElementTree as ET
@@ -70,8 +71,8 @@ def parse_xml(request):
 CONTENT_SWITCH = {
         '帮助':lambda req,param:reply_help(req,param),
 	'help':lambda req,param:reply_help(req,param),
-        '最新':lambda req,param:reply_news(req,param),
-	'zx':lambda req,param:reply_news(req,param),
+        '最新':lambda req,param:reply_gen_news(req,param),
+	'zx':lambda req,param:reply_gen_news(req,param),
 	#'ss':,
 }
 
@@ -158,18 +159,29 @@ def reply_news(request,param):
 		from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
 		create_timestamp = int(time.time())
 		count = articles.count()
-	return render_to_response('reply_local_news.xml',locals(),content_type='application/xml')
+	return render_to_response('reply_news.xml',locals(),content_type='application/xml')
 
-
-def reply_message_test(request):
-	try:
-		message = Message.objects.order_by('-id')[0]
-	except Exception, e:
-		return HttpResponse(e)
+IMAGEURL = re.compile(r'http://.*?\.jpg')
+def reply_gen_news(request,param):
+	news_id = 1
+	msgs = Message.objects.exclude(reason=None).order_by('-id')[:5]
+	articles = list()
+	for msg in msgs:
+		pic = None
+		for image_url in IMAGEURL.findall(msg.content):
+			pic = image_url
+			break
+		title = msg.title
+		description = msg.content[:15]
+		url = reverse('signature.views.news_detail',args=(msg.id,))
+		article = Article(news_id=news_id,title=title,description=description,pic=pic,url=url)
+		articles.append(article)
+	from_user_name,to_user_name = param['to_user_name'],param['from_user_name']
 	create_timestamp = int(time.time())
-	return render_to_response('reply_message.xml',locals(),content_type='application/xml')
+	count = articles.count()
+	return render_to_response('reply_news.xml',locals(),content_type='application/xml')
 
-def reply_news_test(request):
+def news_detail(request,msg_id):
 	try:
 		news = News.objects.order_by('-id')[0]
 	except Exception, e:

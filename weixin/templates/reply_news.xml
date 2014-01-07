@@ -9,7 +9,7 @@
 <item>
 <Title><![CDATA[{{item.title}}]]></Title> 
 <Description><![CDATA[{{item.description}}]]></Description>
-<PicUrl><![CDATA[{{item.pic.url}}]]></PicUrl>
+<PicUrl><![CDATA[{{item.pic}}]]></PicUrl>
 <Url><![CDATA[{{item.url}}]]></Url>
 </item>
 {% endfor %}

@@ -30,20 +30,7 @@ class Article(models.Model):
 	news = models.ForeignKey(News)
 	title = models.CharField(max_length = 100)
 	description = models.CharField(max_length=255,blank=True)
-	pic = models.ImageField(upload_to='upload/article_pic')
-	pic_thumbnail_album = ImageSpecField(
-		source='pic',
-		processors=[ResizeToFill(360,200)],
-		format='JPEG',
-		options={'qulity':60}
-		)
-	pic_thumbnail = ImageSpecField(
-		source='pic',
-		processors=[ResizeToFill(200,200)],
-		format='JPEG',
-		options={'qulity':60}
-		)
-
+	pic = models.CharField(max_length=255,blank=False)
 	url = models.CharField(max_length=255,blank=True)
 
 	def __unicode__(self):
