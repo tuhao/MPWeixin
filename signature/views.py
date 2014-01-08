@@ -90,7 +90,6 @@ def reply(request):
 				if func is not None:
 					return func(request,param)
 				else:
-					key = key.encode('utf-8')
 					if key[:2] == 'ss':
 						key = key[2:]
 						return reply_search(request, param, key)
@@ -105,11 +104,11 @@ def reply(request):
 
 def reply_search(request,param,query):
 	if query is not None:
-		query = query.encode('utf-8')
 		try:
-			r = Message.search().query(query)
+			r = Message.search.query(query)
 			results = list(r)[:5]
 		except Exception, e:
+                        print e
 			return HttpResponse(e)
 		else:
 			return reply_gen_news(request, param, results)
