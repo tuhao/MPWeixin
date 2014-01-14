@@ -1,0 +1,29 @@
+{% extends 'base_index.html' %}
+{% block title%}晒美食信息审核{% endblock %}
+{%block content%}
+
+{% load pagination_tags %}
+{% autopaginate datas 10 %}
+<div class="span12">
+	<table>
+		<tr>
+			<th><input type="checkbox" id="all"></th>
+			<th>序号</th>
+			<th>标题</th>
+			<th>内容</th>
+		</tr>
+
+		{% for item in datas %}
+		<tr>
+			<td><input type="checkbox" class="message"></td>
+			<td>{{item.id}}</td>
+			<td>{{item.title}}</td>
+			<td>{{item.content}}</td>
+		</tr>
+		{% endfor %}
+	</table>
+	<div class="pagination-large pagination-centered" > 
+  <h4>{% paginate %}</h4>
+</div>
+</div>
+{% endblock %}
