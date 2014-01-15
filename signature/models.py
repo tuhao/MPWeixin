@@ -3,16 +3,23 @@ from djangosphinx.models import SphinxSearch
 
 # Create your models here.
 
+class Sort(models.Model):
+	name = models.CharField(max_length=100)
+	def __unicode__(self):
+		return self.name
+
 class Message(models.Model):
 	title = models.CharField(max_length=100)
 	create_time = models.DateTimeField(auto_now_add=True)
 	reason = models.CharField(max_length=100,blank=True)
 	content = models.TextField(u'message',max_length=2000,blank=False)
-
+	sort = models.ForeignKey(Sort)
 	search = SphinxSearch(index='msg_index')
 
 	def __unicode__(self):
 		return self.title
+
+
 
 class Help(models.Model):
 	title = models.CharField(max_length=50)

@@ -15,3 +15,4 @@ class ArticleAdmin(admin.ModelAdmin):
 	list_display = ('id','news','title','description')
 
 admin.site.register(Article,ArticleAdmin)
+admin.site.register(Sort)

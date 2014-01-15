@@ -70,9 +70,14 @@ STATIC_ROOT = ''
 STATIC_URL = '/static/'
 
 # Additional locations of static files
-STATICFILES_DIRS = (
-    '/srv/uwsgi/MPWeixin/weixin/static',
-)
+if DEBUG:
+    STATICFILES_DIRS = (
+        '/home/yasir/Django/MPWeixin/weixin/static',
+    )
+else:
+    STATICFILES_DIRS = (
+        '/srv/uwsgi/MPWeixin/weixin/static',
+    )
 
 
 

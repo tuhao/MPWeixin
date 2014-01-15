@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-{% load staticfiles %}
-<html lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>晒美食</title>
-    <meta name="author" content="ApesRise">
-    <meta name="viewport" content="width=device-width, inital-scale=1.0">
-    <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
-    
- </head>
- <body>
+{% extends 'base_index.html' %}
+{% block title%}晒美食{% endblock %}
+{%block content %}
 <div class="span4">
       <p><img src="{{pic}}"></p>
       <p>{{content}}</p>
-    </div>
-</body>
-</html>
+</div>
+{% endblock %}
