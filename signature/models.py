@@ -5,6 +5,7 @@ from djangosphinx.models import SphinxSearch
 
 class Sort(models.Model):
 	name = models.CharField(max_length=100)
+	value = models.IntegerField(default=0)
 	def __unicode__(self):
 		return self.name
 

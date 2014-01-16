@@ -22,6 +22,7 @@ urlpatterns = patterns('',
     url(r'^detail/(?P<msg_id>\d+)/$',news_detail),
 
     url(r'^approve/$',approve),
+    url(r'^unapprove/$',unapprove),
     
     url(r'^static/(?P<path>.*)$','django.views.static.serve',{'document_root':os.path.dirname(globals()["__file__"])+'/static'}),
     url(r'^media/(?P<path>.*)$','django.views.static.serve',{'document_root':os.path.dirname(globals()["__file__"])+ '/media'}),
