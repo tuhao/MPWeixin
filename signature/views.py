@@ -75,6 +75,11 @@ TYPE_SWITCH = {
 	'event':EVENT_SWITCH,
 }
 
+def enum(**enums):
+	return type('Enum',(),enums)
+
+APPROVE_SORT = enum(APPROVE=2,META=1)
+
 @csrf_exempt
 def reply(request):
 	xml = parse_xml(request)
@@ -86,11 +91,11 @@ def reply(request):
 			key = param[msg_type].encode('utf-8')
 			switch = TYPE_SWITCH.get(msg_type,None)
 			if switch is not None:
-				func = switch.get(key,None)
+				func = switch.get(key.lower(),None)
 				if func is not None:
 					return func(request,param)
 				else:
-					if key[:2] == 'ss':
+					if key[:2].lower() == 'ss':
 						key = key[2:]
 						return reply_search(request, param, key)
 					else:
@@ -106,7 +111,7 @@ def reply_search(request,param,query):
 	if query is not None:
 		try:
 			r = Message.search.query(query)
-			results = list(r)[:5]
+			results = list(r)[:6]
 		except Exception, e:
                         print e
 			return HttpResponse(e)
@@ -154,7 +159,8 @@ def reply_news(request,param):
 	return render_to_response('reply_news.xml',locals(),content_type='application/xml')
 
 def reply_recommend_message(request,param):
-	msgs = Message.objects.exclude(reason=None).order_by('-id')[:5]
+	sort = Sort.objects.filter(value=APPROVE_SORT.APPROVE)
+	msgs = Message.objects.filter(sort=sort).order_by('-id')[:6]
 	return reply_gen_news(request, param, msgs)
 
 
