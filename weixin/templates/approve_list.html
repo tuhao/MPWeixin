@@ -9,7 +9,7 @@ $(document).ready(function(){
 	$("tr").click(function(){
 	 	var checkbox = this.getElementsByTagName('input')[0];
 	 		if ($(this).attr('class') == 'error'){
-				$(this).attr('class','success');
+				$(this).attr('class',$(this).attr('origin'));
 				checkbox.checked = false;
 			}else{
 				$(this).attr('class','error');
@@ -33,6 +33,7 @@ $(document).ready(function(){
 <div class="row">
 	<div class="span14">
 	<form method="POST" id="approveForm" action="">
+		<input type="hidden" name="QUERY_STRING" value="{{request.META.QUERY_STRING}}"/>
 		{% csrf_token%}
 	<table class="table table-striped table-condensed table-hover">
 		<tr id="title">
@@ -45,11 +46,11 @@ $(document).ready(function(){
 
 		{% for item in datas %}
 		{% if item.sort.value == 1 %}
-		<tr class="success">
+		<tr class="warning" origin="warning" >
 		<td><input type="checkbox" value="{{item.id}}" name="msg_id" /></td>
 		{% else %}
-		<tr class="error">
-		<td><input type="checkbox" value="{{item.id}}" name="msg_id" checked="checked"/></td>
+		<tr class="success" origin="success" >
+		<td><input type="checkbox" value="{{item.id}}" name="msg_id" /></td>
 		{% endif %}
 			<td>{{item.title}}</td>
 			<td>{{item.reason}}</td>

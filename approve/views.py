@@ -21,18 +21,25 @@ REASON = {
 
 def approve(request):
 	datas = Message.objects.order_by('-id')
+	params = locals()
 	if request.method == 'GET':
-		return render_to_response('approve_list.html',locals(), context_instance=RequestContext(request))
+		pass
 	else:
 		msg_ids = request.POST.getlist('msg_id')
+		query_string = request.POST.get('QUERY_STRING',None)
+		params['request'].META.update(QUERY_STRING= query_string)
 		sync(msg_ids, TYPES.APPROVE)
-		return render_to_response('approve_list.html',locals(), context_instance=RequestContext(request))
+	return render_to_response('approve_list.html',params, context_instance=RequestContext(request))
 
 def unapprove(request):
 	if request.method == 'POST':
 		msg_ids = request.POST.getlist('msg_id')
 		sync(msg_ids, TYPES.META)
-		return HttpResponseRedirect(reverse('approve.views.approve',args=()))
+		datas = Message.objects.order_by('-id')
+		params = locals()
+		query_string = request.POST.get('QUERY_STRING',None)
+		params['request'].META.update(QUERY_STRING= query_string)
+		return render_to_response('approve_list.html',params, context_instance=RequestContext(request))
 	else:
 		return HttpResponseRedirect('invalid request')
 

@@ -1,8 +1,8 @@
 # Django settings for weixin project.
 import os.path
 
-DEBUG = False
-TEMPLATE_DEBUG = None
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
 
 
 ADMINS = (
