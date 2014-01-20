@@ -32,6 +32,9 @@ $(document).ready(function(){
 </script>
 <div class="row">
 	<div class="span14">
+		<div class="pagination-large pagination-centered" > 
+  <h4>{% paginate %}</h4>
+</div>
 	<form method="POST" id="approveForm" action="">
 		<input type="hidden" name="QUERY_STRING" value="{{request.META.QUERY_STRING}}"/>
 		{% csrf_token%}
