@@ -4,7 +4,6 @@ from signature.models import *
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
-from django.core.urlresolvers import reverse
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')

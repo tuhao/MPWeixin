@@ -41,9 +41,10 @@ $(document).ready(function(){
 			<th  width="10%">标题</th>
 			<th  width="10%">推荐理由</th>
 			<th align="right">内容</th>
+			<th width="20%">配图</th>
 			<th width="10%">创建时间</th>
 		</tr>
-
+		{% load image_tag %}
 		{% for item in datas %}
 		{% if item.sort.value == 1 %}
 		<tr class="warning" origin="warning" >
@@ -55,6 +56,7 @@ $(document).ready(function(){
 			<td>{{item.title}}</td>
 			<td>{{item.reason}}</td>
 			<td>{{item.content}}</td>
+			<td><img src="{{item.content|image_tag}}" /></td>
 			<td>{{item.create_time}}</td>
 		</tr>
 		{% endfor %}
