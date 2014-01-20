@@ -31,16 +31,16 @@ def approve(request):
 	return render_to_response('approve_list.html',params, context_instance=RequestContext(request))
 
 def unapprove(request):
+	datas = Message.objects.order_by('-id')
+	params = locals()
 	if request.method == 'POST':
 		msg_ids = request.POST.getlist('msg_id')
 		sync(msg_ids, TYPES.META)
-		datas = Message.objects.order_by('-id')
-		params = locals()
 		query_string = request.POST.get('QUERY_STRING',None)
 		params['request'].META.update(QUERY_STRING= query_string)
-		return render_to_response('approve_list.html',params, context_instance=RequestContext(request))
 	else:
-		return HttpResponseRedirect('invalid request')
+		pass
+	return render_to_response('approve_list.html',params, context_instance=RequestContext(request))
 
 def sync(ids,sort_id):
 	approve_sort = Sort.objects.get(value=sort_id)
