@@ -2,7 +2,6 @@
 from approve.models import *
 from signature.models import *
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 import sys
 reload(sys)
@@ -19,7 +18,7 @@ REASON = {
 }
 
 def approve(request):
-	datas = Message.objects.order_by('-id')
+	datas = MetaData.objects.order_by('-id')
 	params = locals()
 	if request.method == 'GET':
 		pass
@@ -31,7 +30,7 @@ def approve(request):
 	return render_to_response('approve_list.html',params, context_instance=RequestContext(request))
 
 def unapprove(request):
-	datas = Message.objects.order_by('-id')
+	datas = MetaData.objects.order_by('-id')
 	params = locals()
 	if request.method == 'POST':
 		msg_ids = request.POST.getlist('msg_id')
@@ -45,7 +44,7 @@ def unapprove(request):
 def sync(ids,sort_id):
 	approve_sort = Sort.objects.get(value=sort_id)
 	for msg_id in ids:
-		approve = Message.objects.get(pk=msg_id)
+		approve = MetaData.objects.get(pk=msg_id)
 		approve.reason = REASON.get(sort_id,None)
 		approve.sort = approve_sort
 		approve.save()
