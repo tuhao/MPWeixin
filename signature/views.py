@@ -159,8 +159,7 @@ def reply_news(request,param):
 	return render_to_response('reply_news.xml',locals(),content_type='application/xml')
 
 def reply_recommend_message(request,param):
-	sort = Sort.objects.filter(value=APPROVE_SORT.APPROVE)
-	msgs = Message.objects.filter(sort=sort).order_by('-id')[:6]
+	msgs = Message.objects.order_by('-id')[:6]
 	return reply_gen_news(request, param, msgs)
 
 
@@ -175,8 +174,8 @@ def reply_gen_news(request,param,msgs):
 			break
 		if pic is None:
 			continue
-		title = msg.content[:15]
-		description = msg.content[:15]
+		title = msg.content[:25]
+		description = msg.content[:25]
 		url = "http://" + request.META.get('HTTP_HOST') + reverse('signature.views.news_detail',args=(msg.id,))
 		article = Article(news_id=news_id,title=title,description=description,pic=pic,url=url)
 		articles.append(article)
