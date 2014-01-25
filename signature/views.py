@@ -163,7 +163,8 @@ def reply_recommend_message(request,param):
 	return reply_gen_news(request, param, msgs)
 
 
-IMAGEURL = re.compile(r'http://[^http://].*?\.jpg')
+#IMAGEURL = re.compile(r'http://[^http://].*?\.jpg')
+IMAGEURL = re.compile(r'h(?!.*http://).*\.jpg$')
 def reply_gen_news(request,param,msgs):
 	news_id = 1
 	articles = list()

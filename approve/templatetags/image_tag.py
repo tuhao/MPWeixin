@@ -2,7 +2,8 @@ from django import template
 import re
 
 register = template.Library()
-IMAGE_URL = re.compile(r'http://[^http://].*?\.jpg')
+#IMAGE_URL = re.compile(r'http://[^http://].*?\.jpg')
+IMAGE_URL = re.compile(r'h(?!.*http://).*\.jpg$')
 
 @register.filter()
 def image_tag(content):
