@@ -10,11 +10,12 @@ sys.setdefaultencoding('utf-8')
 def enum(**enums):
 	return type('Enum',(),enums)
 
-TYPES=enum(APPROVE = 2,META = 1)
+TYPES=enum(UNRELATED = 3,APPROVE = 2,META = 1)
 
 REASON = {
 	TYPES.APPROVE:'Approve',
-	TYPES.META:None
+	TYPES.META:None,
+	TYPES.UNRELATED:'Unrelated'
 }
 
 def approve(request):
@@ -23,18 +24,25 @@ def approve(request):
 	if request.method == 'GET':
 		pass
 	else:
-		msg_ids = request.POST.getlist('msg_id')
+		chosen = request.POST.getlist('cb_id')
 		query_string = request.POST.get('QUERY_STRING',None)
 		params['request'].META.update(QUERY_STRING= query_string)
-		sync(msg_ids, TYPES.APPROVE)
+		str_ids = request.POST.getlist('MSG_IDS')
+		ids = str_ids[0].split(' ')
+		unrelated = list()
+		for item in ids[:-1]:
+			if item not in chosen:
+				unrelated.append(item)
+		sync(chosen, TYPES.APPROVE)
+		sync(unrelated,TYPES.UNRELATED)
 	return render_to_response('approve_list.html',params, context_instance=RequestContext(request))
 
 def unapprove(request):
 	datas = MetaData.objects.order_by('-id')
 	params = locals()
 	if request.method == 'POST':
-		msg_ids = request.POST.getlist('msg_id')
-		sync(msg_ids, TYPES.META)
+		chosen = request.POST.getlist('cb_id')
+		sync(chosen, TYPES.META)
 		query_string = request.POST.get('QUERY_STRING',None)
 		params['request'].META.update(QUERY_STRING= query_string)
 	else:
