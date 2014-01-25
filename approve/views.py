@@ -31,10 +31,12 @@ def approve(request):
 		ids = str_ids[0].split(' ')
 		unrelated = list()
 		for item in ids[:-1]:
-			if item not in chosen:
+			if len(item) > 0 and item not in chosen:
 				unrelated.append(item)
 		sync(chosen, TYPES.APPROVE)
 		sync(unrelated,TYPES.UNRELATED)
+		
+		
 	return render_to_response('approve_list.html',params, context_instance=RequestContext(request))
 
 def unapprove(request):
