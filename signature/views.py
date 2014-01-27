@@ -165,9 +165,12 @@ def reply_recommend_message(request,param):
 
 #IMAGEURL = re.compile(r'http://[^http://].*?\.jpg')
 IMAGEURL = re.compile(r'h(?!.*http://).*\.jpg$')
+SYMBOL_REGEX = re.compile(r'(转发)|~|=|>|\&[gl]t;?')
+
 def reply_gen_news(request,param,msgs):
 	news_id = 1
 	articles = list()
+	
 	for msg in msgs:
 		pic = None
 		for image_url in IMAGEURL.findall(msg.content):
@@ -175,8 +178,11 @@ def reply_gen_news(request,param,msgs):
 			break
 		if pic is None:
 			continue
-		title = msg.content[:25]
-		description = msg.content[:25]
+		show = msg.content[:25]
+		if TEXT_FILTER_REGEX is not None:
+			show = TEXT_FILTER_REGEX.sub('', show)
+		title = show
+		description = show
 		url = "http://" + request.META.get('HTTP_HOST') + reverse('signature.views.news_detail',args=(msg.id,))
 		article = Article(news_id=news_id,title=title,description=description,pic=pic,url=url)
 		articles.append(article)
@@ -196,4 +202,5 @@ def news_detail(request,msg_id):
      			pic = image
      			break
      		content = IMAGEURL.sub('',content)
+		content = SYMBOL_REGEX.sub(' ', content.encode('utf-8'))
 		return render_to_response('message_detail.html',locals())
