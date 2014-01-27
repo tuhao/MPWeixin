@@ -170,7 +170,6 @@ SYMBOL_REGEX = re.compile(r'(转发)|~|=|>|\&[gl]t;?')
 def reply_gen_news(request,param,msgs):
 	news_id = 1
 	articles = list()
-	
 	for msg in msgs:
 		pic = None
 		for image_url in IMAGEURL.findall(msg.content):
@@ -178,9 +177,7 @@ def reply_gen_news(request,param,msgs):
 			break
 		if pic is None:
 			continue
-		show = msg.content[:25]
-		if TEXT_FILTER_REGEX is not None:
-			show = TEXT_FILTER_REGEX.sub('', show)
+		show = SYMBOL_REGEX.sub(' ', msg.content[:25].encode('utf-8'))
 		title = show
 		description = show
 		url = "http://" + request.META.get('HTTP_HOST') + reverse('signature.views.news_detail',args=(msg.id,))
