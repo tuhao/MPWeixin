@@ -95,11 +95,11 @@ def reply(request):
 				if func is not None:
 					return func(request,param)
 				else:
-					if key[:2].lower() == 'ss':
-						key = key[2:]
-						return reply_search(request, param, key)
-					else:
-						return reply_help(request,param)
+					#if key[:2].lower() == 'ss':
+					#	key = key[2:]
+					return reply_search(request, param, key)
+					#else:
+					#	return reply_help(request,param)
 			else:
 				return HttpResponse('unsupported type')
 		else:
