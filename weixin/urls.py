@@ -21,7 +21,7 @@ urlpatterns = patterns('',
     url(r'^$',check_signature),
     url(r'^detail/(?P<msg_id>\d+)/$',news_detail),
 
-    url(r'^approve/$',approve),
+    url(r'^approve/(?P<sort_id>\d+)/$',approve),
     url(r'^unapprove/$',unapprove),
 
 

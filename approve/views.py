@@ -10,15 +10,16 @@ sys.setdefaultencoding('utf-8')
 def enum(**enums):
 	return type('Enum',(),enums)
 
-TYPES=enum(UNRELATED = 3,APPROVE = 2,META = 1)
+TYPES=enum(DELICIOUS=4, UNRELATED = 3,APPROVE = 2,META = 1)
 
 REASON = {
 	TYPES.APPROVE:'Approve',
 	TYPES.META:None,
-	TYPES.UNRELATED:'Unrelated'
+	TYPES.UNRELATED:'Unrelated',
+	TYPES.DELICIOUS:'Delicious',
 }
 
-def approve(request):
+def approve(request,sort_id):
 	datas = MetaData.objects.order_by('-id')
 	params = locals()
 	if request.method == 'GET':
@@ -33,7 +34,7 @@ def approve(request):
 		for item in ids[:-1]:
 			if len(item) > 0 and item not in chosen:
 				unrelated.append(item)
-		sync(chosen, TYPES.APPROVE)
+		sync(chosen, sort_id)
 		sync(unrelated,TYPES.UNRELATED)
 		
 		

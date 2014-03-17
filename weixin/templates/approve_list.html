@@ -20,12 +20,17 @@ $(document).ready(function(){
 	});
 
 	$("#approve").click(function(){
-		$("#approveForm").attr('action','{% url "approve.views.approve" %}');
+		$("#approveForm").attr('action','{% url "approve.views.approve" 2 %}');
 		$("#approveForm").submit();
 	});
 
 	$("#unapprove").click(function(){
 		$("#approveForm").attr('action','{% url "approve.views.unapprove" %}');
+		$("#approveForm").submit();
+	});
+
+	$("#delicious").click(function(){
+		$("#approveForm").attr('action','{% url "approve.views.approve" 4 %}');
 		$("#approveForm").submit();
 	});
 });
@@ -54,6 +59,8 @@ $(document).ready(function(){
 		<tr class="" origin="" >
 		{% elif item.sort.value == 2 %}
 		<tr class="success" origin="success" >
+		{% elif item.sort.value == 4 %}
+		<tr class="success" origin="success">
 		{% else %}
 		<tr class="warning" origin="warning" >
 		{% endif %}
@@ -68,7 +75,8 @@ $(document).ready(function(){
 	</table>
 	</form>
 	<div class="pagination-centered">
-		<input type="button" id="approve" class="btn-danger btn-large" value="推荐">
+		<input type="button" id="delicious" class="btn-danger btn-large" value="美食">
+		<input type="button" id="approve" class="btn-warning btn-large" value="菜谱">
 		<input type="button" id="unapprove" class="btn btn-large" value="撤销">
 	</div>
 	<br/>

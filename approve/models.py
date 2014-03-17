@@ -11,3 +11,13 @@ class MetaData(models.Model):
 
 	def __unicode__(self):
 		return self.title
+
+class DeliciousData(models.Model):
+	title = models.CharField(max_length=100)
+	create_time = models.DateTimeField(auto_now_add=True)
+	reason = models.CharField(max_length=100,blank=True)
+	content = models.TextField(u'deliciousData',max_length=2000,blank=False)
+	sort = models.ForeignKey(Sort)
+
+	def __unicode__(self):
+		return self.title

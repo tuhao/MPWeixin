@@ -1,7 +1,7 @@
 # Django settings for weixin project.
 import os.path
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = None
 
 
@@ -18,7 +18,7 @@ DATABASES = {
         # The following settings are not used with sqlite3:
         'USER': 'yasir',
         'PASSWORD': 'arch',
-        'HOST': 'localhost',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'HOST': '192.168.1.102',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
     }
 }
@@ -73,7 +73,7 @@ STATIC_URL = '/static/'
 if DEBUG:
     STATICFILES_DIRS = (
         #'d:/MPWeixin/weixin/static',
-        '/home/yasir/Django/MPWeixin/weixin/static'
+        '/home/yasir/Django/MPWeixin/weixin/static',
     )
 else:
     STATICFILES_DIRS = (

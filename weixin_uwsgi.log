@@ -1,0 +1,65 @@
+*** Starting uWSGI 1.2.6 (64bit) on [Mon Mar 17 22:05:54 2014] ***
+compiled with version: 4.7.2 20121109 (Red Hat 4.7.2-8) on 27 December 2012 02:35:22
+detected number of CPU cores: 2
+current working directory: /home/yasir/Django/MPWeixin
+writing pidfile to /tmp/weixin-master.pid
+detected binary path: /usr/sbin/uwsgi
+uWSGI running as root, you can use --uid/--gid/--chroot options
+*** WARNING: you are running uWSGI as root !!! (use the --uid flag) *** 
+your memory page size is 4096 bytes
+detected max file descriptor number: 1024
+lock engine: pthread robust mutexes
+uwsgi socket 0 bound to TCP address :8001 fd 3
+Python version: 2.7.3 (default, Aug  9 2012, 17:23:57)  [GCC 4.7.1 20120720 (Red Hat 4.7.1-5)]
+*** Python threads support is disabled. You can enable it with --enable-threads ***
+Python main interpreter initialized at 0xc96180
+your server socket listen backlog is limited to 100 connections
+*** Operational MODE: preforking ***
+WSGI app 0 (mountpoint='') ready in 1 seconds on interpreter 0xc96180 pid: 5340 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 5340)
+spawned uWSGI worker 1 (pid: 5341, cores: 1)
+spawned uWSGI worker 2 (pid: 5342, cores: 1)
+spawned uWSGI worker 3 (pid: 5343, cores: 1)
+spawned uWSGI worker 4 (pid: 5344, cores: 1)
+[pid: 5342|app: 0|req: 1/1] 127.0.0.1 () {38 vars in 715 bytes} [Mon Mar 17 22:07:07 2014] GET / => generated 27 bytes in 744 msecs (HTTP/1.1 500) 1 headers in 78 bytes (1 switches on core 0)
+SIGINT/SIGQUIT received...killing workers...
+goodbye to uWSGI.
+VACUUM: pidfile removed.
+*** Starting uWSGI 1.2.6 (64bit) on [Mon Mar 17 22:07:33 2014] ***
+compiled with version: 4.7.2 20121109 (Red Hat 4.7.2-8) on 27 December 2012 02:35:22
+detected number of CPU cores: 2
+current working directory: /usr/local/nginx
+writing pidfile to /tmp/weixin-master.pid
+detected binary path: /usr/sbin/uwsgi
+uWSGI running as root, you can use --uid/--gid/--chroot options
+*** WARNING: you are running uWSGI as root !!! (use the --uid flag) *** 
+your memory page size is 4096 bytes
+detected max file descriptor number: 1024
+lock engine: pthread robust mutexes
+uwsgi socket 0 bound to TCP address :8001 fd 3
+Python version: 2.7.3 (default, Aug  9 2012, 17:23:57)  [GCC 4.7.1 20120720 (Red Hat 4.7.1-5)]
+*** Python threads support is disabled. You can enable it with --enable-threads ***
+Python main interpreter initialized at 0x235ffe0
+your server socket listen backlog is limited to 100 connections
+*** Operational MODE: preforking ***
+WSGI app 0 (mountpoint='') ready in 0 seconds on interpreter 0x235ffe0 pid: 5415 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 5415)
+spawned uWSGI worker 1 (pid: 5416, cores: 1)
+spawned uWSGI worker 2 (pid: 5417, cores: 1)
+spawned uWSGI worker 3 (pid: 5418, cores: 1)
+spawned uWSGI worker 4 (pid: 5419, cores: 1)
+[pid: 5418|app: 0|req: 1/1] 127.0.0.1 () {40 vars in 746 bytes} [Mon Mar 17 22:07:34 2014] GET / => generated 27 bytes in 597 msecs (HTTP/1.1 500) 1 headers in 78 bytes (1 switches on core 0)
+[pid: 5417|app: 0|req: 1/2] 127.0.0.1 () {38 vars in 666 bytes} [Mon Mar 17 22:07:35 2014] GET /favicon.ico => generated 27 bytes in 548 msecs (HTTP/1.1 500) 1 headers in 78 bytes (1 switches on core 0)
+[pid: 5419|app: 0|req: 1/3] 127.0.0.1 () {40 vars in 746 bytes} [Mon Mar 17 22:07:35 2014] GET / => generated 27 bytes in 691 msecs (HTTP/1.1 500) 1 headers in 78 bytes (1 switches on core 0)
+[pid: 5418|app: 0|req: 2/4] 127.0.0.1 () {38 vars in 666 bytes} [Mon Mar 17 22:07:36 2014] GET /favicon.ico => generated 27 bytes in 393 msecs (HTTP/1.1 500) 1 headers in 78 bytes (1 switches on core 0)
+[pid: 5417|app: 0|req: 2/5] 127.0.0.1 () {38 vars in 725 bytes} [Mon Mar 17 22:07:41 2014] GET /admin => generated 27 bytes in 379 msecs (HTTP/1.1 500) 1 headers in 78 bytes (1 switches on core 0)
+[pid: 5416|app: 0|req: 1/6] 127.0.0.1 () {38 vars in 666 bytes} [Mon Mar 17 22:07:41 2014] GET /favicon.ico => generated 27 bytes in 720 msecs (HTTP/1.1 500) 1 headers in 78 bytes (1 switches on core 0)
+[pid: 5419|app: 0|req: 2/7] 127.0.0.1 () {40 vars in 756 bytes} [Mon Mar 17 22:07:54 2014] GET /admin => generated 27 bytes in 309 msecs (HTTP/1.1 500) 1 headers in 78 bytes (1 switches on core 0)
+[pid: 5419|app: 0|req: 3/8] 127.0.0.1 () {38 vars in 666 bytes} [Mon Mar 17 22:07:55 2014] GET /favicon.ico => generated 27 bytes in 540 msecs (HTTP/1.1 500) 1 headers in 78 bytes (1 switches on core 0)
+[pid: 5419|app: 0|req: 4/9] 127.0.0.1 () {40 vars in 756 bytes} [Mon Mar 17 22:08:00 2014] GET /admin => generated 27 bytes in 265 msecs (HTTP/1.1 500) 1 headers in 78 bytes (1 switches on core 0)
+[pid: 5419|app: 0|req: 5/10] 127.0.0.1 () {38 vars in 666 bytes} [Mon Mar 17 22:08:00 2014] GET /favicon.ico => generated 27 bytes in 368 msecs (HTTP/1.1 500) 1 headers in 78 bytes (1 switches on core 0)
+SIGINT/SIGQUIT received...killing workers...
+goodbye to uWSGI.
+VACUUM: pidfile removed.
