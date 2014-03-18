@@ -1,7 +1,7 @@
 # Django settings for weixin project.
 import os.path
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = None
 
 
@@ -18,7 +18,7 @@ DATABASES = {
         # The following settings are not used with sqlite3:
         'USER': 'yasir',
         'PASSWORD': 'arch',
-        'HOST': '192.168.1.102',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'HOST': 'localhost',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
     }
 }

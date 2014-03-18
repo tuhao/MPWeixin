@@ -13,10 +13,10 @@ def enum(**enums):
 TYPES=enum(DELICIOUS=4, UNRELATED = 3,APPROVE = 2,META = 1)
 
 REASON = {
-	TYPES.APPROVE:'Approve',
-	TYPES.META:None,
-	TYPES.UNRELATED:'Unrelated',
-	TYPES.DELICIOUS:'Delicious',
+	'2':'Approve',
+	'1':None,
+	'3':'Unrelated',
+	'4':'Delicious',
 }
 
 def approve(request,sort_id):
@@ -35,7 +35,7 @@ def approve(request,sort_id):
 			if len(item) > 0 and item not in chosen:
 				unrelated.append(item)
 		sync(chosen, sort_id)
-		sync(unrelated,TYPES.UNRELATED)
+		#sync(unrelated,TYPES.UNRELATED)
 		
 		
 	return render_to_response('approve_list.html',params, context_instance=RequestContext(request))
@@ -57,5 +57,6 @@ def sync(ids,sort_id):
 	for msg_id in ids:
 		approve = MetaData.objects.get(pk=msg_id)
 		approve.reason = REASON.get(sort_id,None)
+		print approve.reason
 		approve.sort = approve_sort
 		approve.save()
