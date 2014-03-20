@@ -33,6 +33,11 @@ $(document).ready(function(){
 		$("#approveForm").attr('action','{% url "approve.views.approve" 4 %}');
 		$("#approveForm").submit();
 	});
+
+	$("#healthy").click(function(){
+		$("#approveForm").attr('action','{% url "approve.views.approve" 5 %}');
+		$("#approveForm").submit();
+	});
 });
 </script>
 <div class="row">
@@ -61,6 +66,8 @@ $(document).ready(function(){
 		<tr class="success" origin="success" >
 		{% elif item.sort.value == 4 %}
 		<tr class="success" origin="success">
+		{% elif item.sort.value == 5 %}
+		<tr class="success" origin="success">
 		{% else %}
 		<tr class="warning" origin="warning" >
 		{% endif %}
@@ -75,8 +82,9 @@ $(document).ready(function(){
 	</table>
 	</form>
 	<div class="pagination-centered">
+		<input type="button" id="healthy" class="btn-success btn-large" value="健康">
 		<input type="button" id="delicious" class="btn-danger btn-large" value="美食">
-		<input type="button" id="approve" class="btn-warning btn-large" value="菜谱">
+		<input type="button" id="approve" class="btn-info btn-large" value="菜谱">
 		<input type="button" id="unapprove" class="btn btn-large" value="撤销">
 	</div>
 	<br/>

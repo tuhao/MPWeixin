@@ -10,13 +10,14 @@ sys.setdefaultencoding('utf-8')
 def enum(**enums):
 	return type('Enum',(),enums)
 
-TYPES=enum(DELICIOUS=4, UNRELATED = 3,APPROVE = 2,META = 1)
+TYPES=enum(HEALTHY = 5,DELICIOUS = 4, UNRELATED = 3,APPROVE = 2,META = 1)
 
 REASON = {
 	'2':'Approve',
 	'1':None,
 	'3':'Unrelated',
 	'4':'Delicious',
+	'5':'Healthy'
 }
 
 def approve(request,sort_id):
